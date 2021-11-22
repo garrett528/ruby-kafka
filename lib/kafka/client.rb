@@ -86,6 +86,7 @@ module Kafka
                    sasl_gssapi_keytab: nil, sasl_plain_authzid: '', sasl_plain_username: nil, sasl_plain_password: nil,
                    sasl_scram_username: nil, sasl_scram_password: nil, sasl_scram_mechanism: nil,
                    sasl_over_ssl: true, ssl_ca_certs_from_system: false, partitioner: nil, sasl_oauth_token_provider: nil, ssl_verify_hostname: true,
+                   sasl_aws_msk_iam_access_key_id: nil, sasl_aws_msk_iam_secret_access_key: nil, sasl_aws_msk_iam_region: nil,
                    resolve_seed_brokers: false)
       @logger = TaggedLogger.new(logger)
       @instrumenter = Instrumenter.new(client_id: client_id)
@@ -113,6 +114,9 @@ module Kafka
         sasl_scram_password: sasl_scram_password,
         sasl_scram_mechanism: sasl_scram_mechanism,
         sasl_oauth_token_provider: sasl_oauth_token_provider,
+        sasl_aws_msk_iam_access_key_id: sasl_aws_msk_iam_access_key_id,
+        sasl_aws_msk_iam_secret_access_key: sasl_aws_msk_iam_secret_access_key,
+        sasl_aws_msk_iam_region: sasl_aws_msk_iam_region,
         logger: @logger
       )
 

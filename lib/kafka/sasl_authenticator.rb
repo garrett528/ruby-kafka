@@ -4,13 +4,16 @@ require 'kafka/sasl/plain'
 require 'kafka/sasl/gssapi'
 require 'kafka/sasl/scram'
 require 'kafka/sasl/oauth'
+require 'kafka/sasl/awsmskiam'
 
 module Kafka
   class SaslAuthenticator
     def initialize(logger:, sasl_gssapi_principal:, sasl_gssapi_keytab:,
                    sasl_plain_authzid:, sasl_plain_username:, sasl_plain_password:,
                    sasl_scram_username:, sasl_scram_password:, sasl_scram_mechanism:,
-                   sasl_oauth_token_provider:)
+                   sasl_oauth_token_provider:,
+                   sasl_aws_msk_iam_access_key_id:, sasl_aws_msk_iam_secret_access_key:, sasl_aws_msk_iam_region:
+                  )
       @logger = TaggedLogger.new(logger)
 
       @plain = Sasl::Plain.new(
@@ -38,7 +41,14 @@ module Kafka
         logger: @logger,
       )
 
-      @mechanism = [@gssapi, @plain, @scram, @oauth].find(&:configured?)
+      @aws_msk_iam = Sasl::AwsMskIam.new(
+        access_key_id: sasl_aws_msk_iam_access_key_id,
+        secret_access_key: sasl_aws_msk_iam_secret_access_key,
+        aws_region: sasl_aws_msk_iam_region,
+        logger: @logger,
+      )
+
+      @mechanism = [@gssapi, @plain, @scram, @oauth, @aws_msk_iam].find(&:configured?)
     end
 
     def enabled?
