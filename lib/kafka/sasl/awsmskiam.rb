@@ -13,10 +13,6 @@ module Kafka
                 @access_key_id = access_key_id
                 @secret_access_key = secret_access_key
                 @aws_region = aws_region
-                
-                if configured?
-                    get_signer
-                end
             end
 
             def ident
@@ -71,7 +67,7 @@ module Kafka
             private
 
             def get_signer
-                @signer = Aws::Sigv4::Signer.new(
+                signer = Aws::Sigv4::Signer.new(
                     service: 'kafka-cluster',
                     region: @aws_region,
                     # static credentials
