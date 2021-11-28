@@ -8,9 +8,10 @@ require "kafka"
 
 logger = Logger.new($stderr)
 brokers = ENV.fetch("BOOTSTRAP_BROKERS")
+brokers = brokers.split(",")
 access_key_id = ENV.fetch("AWS_ACCESS_KEY_ID")
 secret_access_key = ENV.fetch("AWS_SECRET_ACCESS_KEY")
-session_token = ENV.fetch("AWS_SESSION_TOKEN")
+# session_token = ENV.fetch("AWS_SESSION_TOKEN")
 
 topic = "test-topic"
 
@@ -28,8 +29,11 @@ kafka = Kafka.new(
 producer = kafka.producer
 
 begin
-    producer.produce("test-ruby", topic: topic)
-    producer.deliver_messages
+    for i in 1..10 do
+        producer.produce("test-ruby-#{i}", topic: topic)
+        producer.deliver_messages
+        sleep(30)
+    end
 ensure
     producer.shutdown
 end

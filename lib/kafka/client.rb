@@ -87,6 +87,10 @@ module Kafka
                    sasl_scram_username: nil, sasl_scram_password: nil, sasl_scram_mechanism: nil,
                    sasl_aws_msk_iam_access_key_id: nil,
                    sasl_aws_msk_iam_secret_key_id: nil, sasl_aws_msk_iam_aws_region: nil,
+                   sasl_aws_msk_iam_aws_session_token: nil,
+                   sasl_aws_msk_iam_aws_role_arn: nil,
+                   sasl_aws_msk_iam_aws_role_session_name: nil,
+                   sasl_aws_msk_iam_aws_duration_sec: 900,
                    sasl_over_ssl: true, ssl_ca_certs_from_system: false, partitioner: nil, sasl_oauth_token_provider: nil, ssl_verify_hostname: true,
                    resolve_seed_brokers: false)
       @logger = TaggedLogger.new(logger)
@@ -117,6 +121,10 @@ module Kafka
         sasl_aws_msk_iam_access_key_id: sasl_aws_msk_iam_access_key_id,
         sasl_aws_msk_iam_secret_key_id: sasl_aws_msk_iam_secret_key_id,
         sasl_aws_msk_iam_aws_region: sasl_aws_msk_iam_aws_region,
+        sasl_aws_msk_iam_aws_session_token: sasl_aws_msk_iam_aws_session_token,
+        sasl_aws_msk_iam_aws_role_arn: sasl_aws_msk_iam_aws_role_arn,
+        sasl_aws_msk_iam_aws_role_session_name: sasl_aws_msk_iam_aws_role_session_name,
+        sasl_aws_msk_iam_aws_duration_sec: sasl_aws_msk_iam_aws_duration_sec,
         sasl_oauth_token_provider: sasl_oauth_token_provider,
         logger: @logger
       )

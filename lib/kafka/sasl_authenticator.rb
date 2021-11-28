@@ -14,7 +14,11 @@ module Kafka
                    sasl_oauth_token_provider:,
                    sasl_aws_msk_iam_access_key_id:,
                    sasl_aws_msk_iam_secret_key_id:,
-                   sasl_aws_msk_iam_aws_region:
+                   sasl_aws_msk_iam_aws_region:,
+                   sasl_aws_msk_iam_aws_session_token:,
+                   sasl_aws_msk_iam_aws_role_arn:,
+                   sasl_aws_msk_iam_aws_role_session_name:,
+                   sasl_aws_msk_iam_aws_duration_sec:
                   )
       @logger = TaggedLogger.new(logger)
 
@@ -38,10 +42,18 @@ module Kafka
         logger: @logger,
       )
 
+      aws_msk_iam_config = Sasl::AwsMskIamConfig.new(
+          aws_region: sasl_aws_msk_iam_aws_region,
+          access_key_id: sasl_aws_msk_iam_access_key_id,
+          secret_key_id: sasl_aws_msk_iam_secret_key_id,
+          session_token: sasl_aws_msk_iam_aws_session_token,
+          role_arn: sasl_aws_msk_iam_aws_role_arn,
+          role_session_name: sasl_aws_msk_iam_aws_role_session_name,
+          duration_sec: sasl_aws_msk_iam_aws_duration_sec,
+      )
+
       @aws_msk_iam = Sasl::AwsMskIam.new(
-        access_key_id: sasl_aws_msk_iam_access_key_id,
-        secret_key_id: sasl_aws_msk_iam_secret_key_id,
-        aws_region: sasl_aws_msk_iam_aws_region,
+        aws_msk_iam_config: aws_msk_iam_config,
         logger: @logger,
       )
 
