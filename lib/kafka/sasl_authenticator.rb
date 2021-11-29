@@ -4,13 +4,22 @@ require 'kafka/sasl/plain'
 require 'kafka/sasl/gssapi'
 require 'kafka/sasl/scram'
 require 'kafka/sasl/oauth'
+require 'kafka/sasl/awsmskiam'
 
 module Kafka
   class SaslAuthenticator
     def initialize(logger:, sasl_gssapi_principal:, sasl_gssapi_keytab:,
                    sasl_plain_authzid:, sasl_plain_username:, sasl_plain_password:,
                    sasl_scram_username:, sasl_scram_password:, sasl_scram_mechanism:,
-                   sasl_oauth_token_provider:)
+                   sasl_oauth_token_provider:,
+                   sasl_aws_msk_iam_access_key_id:,
+                   sasl_aws_msk_iam_secret_key_id:,
+                   sasl_aws_msk_iam_aws_region:,
+                   sasl_aws_msk_iam_aws_session_token:,
+                   sasl_aws_msk_iam_aws_role_arn:,
+                   sasl_aws_msk_iam_aws_role_session_name:,
+                   sasl_aws_msk_iam_aws_duration_sec:
+                  )
       @logger = TaggedLogger.new(logger)
 
       @plain = Sasl::Plain.new(
@@ -33,12 +42,27 @@ module Kafka
         logger: @logger,
       )
 
+      aws_msk_iam_config = Sasl::AwsMskIamConfig.new(
+          aws_region: sasl_aws_msk_iam_aws_region,
+          access_key_id: sasl_aws_msk_iam_access_key_id,
+          secret_key_id: sasl_aws_msk_iam_secret_key_id,
+          session_token: sasl_aws_msk_iam_aws_session_token,
+          role_arn: sasl_aws_msk_iam_aws_role_arn,
+          role_session_name: sasl_aws_msk_iam_aws_role_session_name,
+          duration_sec: sasl_aws_msk_iam_aws_duration_sec,
+      )
+
+      @aws_msk_iam = Sasl::AwsMskIam.new(
+        aws_msk_iam_config: aws_msk_iam_config,
+        logger: @logger,
+      )
+
       @oauth = Sasl::OAuth.new(
         token_provider: sasl_oauth_token_provider,
         logger: @logger,
       )
 
-      @mechanism = [@gssapi, @plain, @scram, @oauth].find(&:configured?)
+      @mechanism = [@gssapi, @plain, @scram, @oauth, @aws_msk_iam].find(&:configured?)
     end
 
     def enabled?
